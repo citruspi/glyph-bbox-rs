@@ -21,3 +21,11 @@ function loadConfig() {
         }
     }
 }
+
+window.onload = function() {
+    let config = loadConfig();
+
+    if (config['error'] !== undefined) { console.log(config); return }
+
+    console.log(config);
+};
