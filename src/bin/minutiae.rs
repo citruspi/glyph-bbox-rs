@@ -1,5 +1,9 @@
 #[macro_use]
 extern crate clap;
+#[macro_use]
+extern crate log;
+
+extern crate pretty_env_logger;
 
 use std::net::SocketAddr;
 
@@ -8,6 +12,8 @@ use warp::Filter;
 
 #[tokio::main]
 async fn main() {
+    pretty_env_logger::init_custom_env("MINUTIAE_LOG_LEVEL");
+
     let m = App::new("minutiæ")
         .version(crate_version!())
         .author("Mihir Singh (@citruspi)")
