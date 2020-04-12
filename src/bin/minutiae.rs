@@ -8,6 +8,7 @@ extern crate pretty_env_logger;
 use std::net::SocketAddr;
 
 use clap::{App, Arg, SubCommand};
+use minutiae;
 use warp::Filter;
 
 #[tokio::main]
@@ -40,14 +41,20 @@ async fn main() {
                 None => raw_bind_addr = "127.0.0.1:2352",
             }
 
-            let hello = warp::path::end().map(|| format!("hello world"));
+            let index_html =
+                warp::path::end().and_then(|| minutiae::web::serve_file("index.html", "text/html"));
+            let main_js = warp::path("main.js")
+                .and_then(|| minutiae::web::serve_file("main.js", "application/javascript"));
+            let raphael_js = warp::path("raphael.js").and_then(|| {
+                minutiae::web::serve_file("vendor/raphael.min.js", "application/javascript")
+            });
 
             let bind_addr: SocketAddr =
                 raw_bind_addr.parse().expect("Failed to parse bind address");
 
-            println!("Listening on http://{}", bind_addr);
-
-            warp::serve(hello).run(bind_addr).await;
+            warp::serve(index_html.or(main_js).or(raphael_js))
+                .run(bind_addr)
+                .await;
         }
         _ => println!(),
     }
