@@ -15,7 +15,7 @@ use warp::Filter;
 async fn main() {
     pretty_env_logger::init_custom_env("MINUTIAE_LOG_LEVEL");
 
-    let m = App::new("minutiæ")
+    let rt = App::new("minutiæ")
         .version(crate_version!())
         .author("Mihir Singh (@citruspi)")
         .subcommand(
@@ -32,14 +32,9 @@ async fn main() {
         )
         .get_matches();
 
-    match m.subcommand_name() {
+    match rt.subcommand_name() {
         Some("server") => {
-            let raw_bind_addr: &str;
-
-            match m.value_of("bind") {
-                Some(v) => raw_bind_addr = v,
-                None => raw_bind_addr = "127.0.0.1:2352",
-            }
+            let arg = rt.subcommand_matches("server");
 
             let index_html =
                 warp::path::end().and_then(|| minutiae::web::serve_file("index.html", "text/html"));
@@ -55,8 +50,12 @@ async fn main() {
                 .and(warp::body::json())
                 .and_then(minutiae::web::write_dataset);
 
-            let bind_addr: SocketAddr =
-                raw_bind_addr.parse().expect("Failed to parse bind address");
+            let bind_addr: SocketAddr = arg
+                .unwrap()
+                .value_of("bind")
+                .unwrap()
+                .parse()
+                .expect("Failed to parse bind address");
 
             warp::serve(index_html.or(main_js).or(raphael_js).or(write))
                 .run(bind_addr)
