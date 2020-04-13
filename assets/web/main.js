@@ -8,6 +8,8 @@ function loadConfig() {
         || !urlParams.has('char-range')
         || !urlParams.has('file-name')
         || !urlParams.has('file-format')
+        || !urlParams.has('signal-offset')
+        || !urlParams.has('signal-range')
     ) {
         return {"error": "invalid config"}
     }
@@ -24,6 +26,10 @@ function loadConfig() {
         char: {
             offset: parseInt(urlParams.get('char-offset')),
             range: parseInt(urlParams.get('char-range')),
+        },
+        signals: {
+            offset: parseInt(urlParams.get('signal-offset')),
+            range: parseInt(urlParams.get('signal-range')),
         }
     }
 }
@@ -40,9 +46,7 @@ function generateDataSet(config) {
         dataset.data[face] = {};
 
         config.font.sizes.forEach(function(size) {
-            dataset.data[face][size] = {
-                'boxes': draw(paper, face, size, config.char.offset, config.char.range)
-            };
+            dataset.data[face][size] =  draw(paper, face, size, config.char.offset, config.char.range, config.signals.offset, config.signals.range);
         });
     });
 
@@ -51,10 +55,14 @@ function generateDataSet(config) {
     return dataset;
 }
 
-function draw(paper, fontFace, fontSize, charOffset, charRange) {
+function draw(paper, fontFace, fontSize, charOffset, charRange, signalOffset, signalRange) {
     let boxes = [];
+    let signalCount = 0;
+    let signals = {
+        mean: [0.0, 0.0]
+    };
 
-    for (let x=charOffset; x<=charRange; x++) {
+    for (let x = charOffset; x <= charRange; x++) {
         let str = paper.text(0, 0, String.fromCharCode(x));
 
         str.attr('font-family', fontFace);
@@ -65,10 +73,22 @@ function draw(paper, fontFace, fontSize, charOffset, charRange) {
         str.remove();
 
         boxes.push([boundingBox.width, boundingBox.height]);
+
+        if (signalOffset <= x && x <= signalRange) {
+            signalCount += 1;
+
+            signals.mean[0] += boundingBox.width;
+            signals.mean[1] += boundingBox.height;
+        }
     }
 
-    return boxes;
+    signals.mean[0] = signals.mean[0] / signalCount;
+    signals.mean[1] = signals.mean[1] / signalCount;
 
+    return {
+        boxes,
+        signals,
+    };
 }
 
 window.onload = function() {

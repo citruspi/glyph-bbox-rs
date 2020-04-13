@@ -20,6 +20,12 @@ pub type Data = HashMap<FontFace, HashMap<FontSize, FontData>>;
 #[derive(Debug, Serialize, Deserialize)]
 pub struct FontData {
     pub boxes: Vec<BoundingBox>,
+    pub signals: Signals,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct Signals {
+    mean: BoundingBox,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -45,6 +51,7 @@ pub struct DataSet {
 pub struct DataSetConfig {
     pub font: FontConfig,
     pub char: CharConfig,
+    pub signals: CharConfig,
 }
 
 #[derive(Debug, Deserialize)]
