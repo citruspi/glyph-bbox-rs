@@ -49,10 +49,16 @@ async fn main() {
                 minutiae::web::serve_file("vendor/raphael.min.js", "application/javascript")
             });
 
+            let write = warp::post()
+                .and(warp::path!("write"))
+                .and(warp::query::<minutiae::WriteOptions>())
+                .and(warp::body::json())
+                .and_then(minutiae::web::write_dataset);
+
             let bind_addr: SocketAddr =
                 raw_bind_addr.parse().expect("Failed to parse bind address");
 
-            warp::serve(index_html.or(main_js).or(raphael_js))
+            warp::serve(index_html.or(main_js).or(raphael_js).or(write))
                 .run(bind_addr)
                 .await;
         }

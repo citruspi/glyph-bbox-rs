@@ -6,11 +6,17 @@ function loadConfig() {
         || !urlParams.has('font-sizes')
         || !urlParams.has('char-offset')
         || !urlParams.has('char-range')
+        || !urlParams.has('file-name')
+        || !urlParams.has('file-format')
     ) {
         return {"error": "invalid config"}
     }
 
     return {
+        file: {
+            name: urlParams.get('file-name'),
+            format: urlParams.get('file-format'),
+        },
         font: {
             faces: urlParams.get('font-faces').split(','),
             sizes: urlParams.get('font-sizes').split(','),
@@ -67,10 +73,19 @@ function draw(paper, fontFace, fontSize, charOffset, charRange) {
 
 window.onload = function() {
     let config = loadConfig();
+    let data = null;
 
-    if (config['error'] !== undefined) { console.log(config); return }
+    if (config['error'] !== undefined) { data = config; }
+    else { data = generateDataSet(config); }
 
-    let dataset = generateDataSet(config);
-
-    console.log(dataset);
+    fetch(`/write/?filename=${encodeURIComponent(config.file.name)}&format=${config.file.format}`, {
+        method: 'post',
+        body: JSON.stringify(data),
+        headers: new Headers({"Content-Type": "application/json"})
+    }).then((response) => {
+        return response.text();
+    })
+    .then((data) => {
+        if (config['error'] === undefined) { console.log(`Server response: ${data}`) }
+    });
 };

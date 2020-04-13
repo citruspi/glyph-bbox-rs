@@ -1,6 +1,8 @@
 use rust_embed::RustEmbed;
 use warp::{http::HeaderValue, reply::Response, Rejection, Reply};
 
+use crate::dataset;
+
 #[derive(RustEmbed)]
 #[folder = "assets/web"]
 struct Asset;
@@ -11,5 +13,24 @@ pub async fn serve_file(path: &str, content_type: &str) -> Result<impl Reply, Re
     let mut res = Response::new(asset.into());
     res.headers_mut()
         .insert("Content-Type", HeaderValue::from_str(content_type).unwrap());
+    Ok(res)
+}
+
+pub async fn write_dataset(
+    opts: dataset::WriteOptions,
+    dataset: dataset::DataSet,
+) -> Result<impl Reply, Rejection> {
+    let mut res: Response;
+    let r = dataset.write(opts);
+
+    match r {
+        Ok(()) => {
+            res = Response::new("success".into());
+        }
+        Err(E) => {
+            res = Response::new("failed to write dataset".into());
+        }
+    }
+
     Ok(res)
 }
