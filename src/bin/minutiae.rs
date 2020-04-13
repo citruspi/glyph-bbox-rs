@@ -30,9 +30,36 @@ async fn main() {
                         .default_value("127.0.0.1:2352"),
                 ),
         )
+        .subcommand(
+            SubCommand::with_name("stat").about("inspect data set").arg(
+                Arg::with_name("path")
+                    .help("path of the dataset to inspect")
+                    .takes_value(true)
+                    .index(1)
+                    .required(true),
+            ),
+        )
         .get_matches();
 
     match rt.subcommand_name() {
+        Some("stat") => {
+            let path: String;
+            let opts = rt.subcommand_matches("stat").unwrap();
+
+            match opts.value_of("path") {
+                Some(v) => {
+                    path = v.to_owned();
+
+                    let ds = minutiae::DataSet::from_file(minutiae::ReadOptions {
+                        filename: path,
+                        format: minutiae::Format::JSON,
+                    });
+
+                    println!("{:#?}", ds);
+                }
+                None => error!("no path"),
+            }
+        }
         Some("server") => {
             let arg = rt.subcommand_matches("server");
 
