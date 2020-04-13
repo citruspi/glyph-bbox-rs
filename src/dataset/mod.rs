@@ -2,7 +2,7 @@ extern crate serde;
 extern crate serde_json;
 
 use std::collections::HashMap;
-use std::fs::File;
+use std::fs::{read_to_string, File};
 use std::io::{Error, Write};
 
 use serde::{Deserialize, Serialize};
@@ -60,12 +60,28 @@ pub struct WriteOptions {
     pub format: Format,
 }
 
+pub type ReadOptions = WriteOptions;
+
 #[derive(Debug, Deserialize)]
 pub enum Format {
     JSON,
 }
 
 impl DataSet {
+    pub fn from_file(opts: ReadOptions) -> DataSet {
+        match opts.format {
+            Format::JSON => {
+                let json_file_str = read_to_string(opts.filename).expect("file not found");
+
+                DataSet::from_json_string(&json_file_str)
+            }
+        }
+    }
+
+    pub fn from_json_string(s: &String) -> DataSet {
+        serde_json::from_str(&s).expect("error while reading json")
+    }
+
     pub fn write(&self, opts: WriteOptions) -> Result<(), Error> {
         let mut buf = Vec::new();
 
