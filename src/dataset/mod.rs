@@ -67,6 +67,11 @@ pub enum Format {
     JSON,
 }
 
+pub struct BoundingBoxRenderOptions {
+    pub face: FontFace,
+    pub size: FontSize,
+}
+
 impl DataSet {
     pub fn from_file(opts: ReadOptions) -> DataSet {
         match opts.format {
@@ -92,5 +97,39 @@ impl DataSet {
         let mut file = File::create(opts.filename).unwrap();
 
         file.write_all(buf.as_ref())
+    }
+
+    pub fn bounding_box(&self, s: &str, opts: BoundingBoxRenderOptions) -> Option<BoundingBox> {
+        if !&self.data.contains_key(opts.face.as_str())
+            || !&self.data[opts.face.as_str()].contains_key(opts.size.as_str())
+        {
+            ()
+        }
+
+        let mut width: Dimension = 0.0;
+        let mut height: Dimension = 0.0;
+
+        let mut buf = [0; 2];
+
+        for c in s.chars() {
+            let char_box = match &self.data[opts.face.as_str()][opts.size.as_str()]
+                .boxes
+                .get(c.encode_utf16(&mut buf)[0] as usize)
+            {
+                Some(val) => val.to_vec(),
+                None => self.data[opts.face.as_str()][opts.size.as_str()]
+                    .signals
+                    .mean
+                    .to_vec(),
+            };
+
+            width += char_box[0];
+
+            if char_box[1] > height {
+                height = char_box[1];
+            }
+        }
+
+        Some(vec![width, height])
     }
 }

@@ -39,9 +39,65 @@ async fn main() {
                     .required(true),
             ),
         )
+        .subcommand(
+            SubCommand::with_name("bbox")
+                .about("calculate bounding box")
+                .arg(
+                    Arg::with_name("dataset")
+                        .help("dataset path")
+                        .takes_value(true)
+                        .short("d")
+                        .long("data-set")
+                        .required(true),
+                )
+                .arg(
+                    Arg::with_name("face")
+                        .help("font face")
+                        .takes_value(true)
+                        .short("f")
+                        .long("face")
+                        .required(true),
+                )
+                .arg(
+                    Arg::with_name("size")
+                        .help("font size")
+                        .takes_value(true)
+                        .short("s")
+                        .long("size")
+                        .required(true),
+                )
+                .arg(
+                    Arg::with_name("str")
+                        .help("string")
+                        .takes_value(true)
+                        .index(1)
+                        .required(true),
+                ),
+        )
         .get_matches();
 
     match rt.subcommand_name() {
+        Some("bbox") => {
+            let opts = rt.subcommand_matches("bbox").unwrap();
+
+            let ds = minutiae::DataSet::from_file(minutiae::ReadOptions {
+                filename: opts.value_of("dataset").unwrap().to_owned(),
+                format: minutiae::Format::JSON,
+            });
+
+            let bbox = ds.bounding_box(
+                opts.value_of("str").unwrap(),
+                minutiae::BoundingBoxRenderOptions {
+                    face: opts.value_of("face").unwrap().to_owned(),
+                    size: opts.value_of("size").unwrap().to_owned(),
+                },
+            );
+
+            match bbox {
+                Some(v) => info!("{:?}", v),
+                None => error!("failed"),
+            }
+        }
         Some("stat") => {
             let path: String;
             let opts = rt.subcommand_matches("stat").unwrap();
