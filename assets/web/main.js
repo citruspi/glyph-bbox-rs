@@ -22,8 +22,8 @@ function loadConfig() {
             sizes: urlParams.get('font-sizes').split(','),
         },
         char: {
-            offset: urlParams.get('char-offset'),
-            range: urlParams.get('char-range'),
+            offset: parseInt(urlParams.get('char-offset')),
+            range: parseInt(urlParams.get('char-range')),
         }
     }
 }

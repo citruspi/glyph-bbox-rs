@@ -8,6 +8,7 @@ use std::io::{Error, Write};
 use serde::{Deserialize, Serialize};
 use serde_json::Serializer as JsonSerializer;
 
+pub type Index = i32;
 pub type Dimension = f32;
 pub type BoundingBox = Vec<Dimension>;
 pub type FontFace = String;
@@ -29,8 +30,8 @@ pub struct FontConfig {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct CharConfig {
-    pub offset: String,
-    pub range: String,
+    pub offset: Index,
+    pub range: Index,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
