@@ -20,14 +20,15 @@ pub async fn write_dataset(
     opts: dataset::WriteOptions,
     dataset: dataset::DataSet,
 ) -> Result<impl Reply, Rejection> {
-    let mut res: Response;
+    let res: Response;
     let r = dataset.write(opts);
 
     match r {
         Ok(()) => {
             res = Response::new("success".into());
         }
-        Err(E) => {
+        Err(e) => {
+            error!("{:?}", e);
             res = Response::new("failed to write dataset".into());
         }
     }

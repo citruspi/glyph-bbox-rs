@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use std::fs::{read_to_string, File};
 use std::io::{Error, Write};
 
-use serde::{Deserialize, Serialize};
+use serde::Serialize;
 use serde_json::Serializer as JsonSerializer;
 
 pub type Index = i32;
