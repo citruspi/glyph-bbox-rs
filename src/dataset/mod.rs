@@ -17,37 +17,37 @@ pub type FontFaces = Vec<FontFace>;
 pub type FontSizes = Vec<FontSize>;
 pub type Data = HashMap<FontFace, HashMap<FontSize, FontData>>;
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct FontData {
     pub boxes: Vec<BoundingBox>,
     pub signals: Signals,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Signals {
     mean: BoundingBox,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct FontConfig {
     pub faces: FontFaces,
     pub sizes: FontSizes,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CharConfig {
     pub offset: Index,
     pub range: Index,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct DataSet {
     pub error: Option<String>,
     pub config: DataSetConfig,
     pub data: Data,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct DataSetConfig {
     pub font: FontConfig,
     pub char: CharConfig,
