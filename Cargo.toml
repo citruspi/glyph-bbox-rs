@@ -3,6 +3,12 @@ name = "glyph-bbox"
 version = "0.1.0"
 authors = ["Mihir Singh <git.service@mihirsingh.com>"]
 edition = "2018"
+description = "Data structures for managing glyph bbox datasets and support for calculating string bbox's"
+license = "Unlicense"
+homepage = "https://src.doom.fm/citruspi/glyph-bbox-rs"
+repository = "https://src.doom.fm/citruspi/glyph-bbox-rs"
+keywords = ["bbox", "bounding-box", "glyph"]
+categories = ["algorithms", "data-structures", "rendering"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
