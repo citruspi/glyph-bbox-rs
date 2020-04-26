@@ -6,6 +6,7 @@ default:
 
 stages:
   - test
+  - publish
 
 cargo fmt:
   stage: test
@@ -30,3 +31,13 @@ publish dry run:
     - cargo login $CRATES_IO_TOKEN
   script:
     - cargo publish --dry-run
+
+crates_io:
+  stage: publish
+  before_script:
+    - cargo login $CRATES_IO_TOKEN
+  script:
+    - cargo publish
+  only:
+    refs:
+      - master
