@@ -7,14 +7,14 @@ default:
 stages:
   - test
 
-cargo_fmt:
+cargo fmt:
   stage: test
   before_script:
     - rustup component add rustfmt
   script:
     - cargo fmt -- --check
 
-cargo_test:
+cargo test:
   stage: test
   script:
     - cargo test
@@ -24,7 +24,7 @@ compile:
   script:
     - cargo build
 
-publish_dry_run:
+publish dry run:
   stage: test
   before_script:
     - cargo login $CRATES_IO_TOKEN
