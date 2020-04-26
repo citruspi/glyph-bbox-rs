@@ -12,7 +12,7 @@ use clap::{App, Arg, SubCommand};
 pub use dataset::*;
 
 pub fn cli_entrypoint<'b, 'a>() -> App<'a, 'b> {
-    App::new("minutiæ")
+    App::new("glyph-bbox")
         .version(crate_version!())
         .author("Mihir Singh (@citruspi)")
         .subcommand(

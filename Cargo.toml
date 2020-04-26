@@ -1,5 +1,5 @@
 [package]
-name = "minutiae"
+name = "glyph-bbox"
 version = "0.1.0"
 authors = ["Mihir Singh <git.service@mihirsingh.com>"]
 edition = "2018"

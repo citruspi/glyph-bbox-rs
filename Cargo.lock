@@ -312,6 +312,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "glyph-bbox"
+version = "0.1.0"
+dependencies = [
+ "clap",
+ "log 0.4.8",
+ "pretty_env_logger",
+ "rust-embed",
+ "serde",
+ "serde_derive",
+ "serde_json",
+ "tokio",
+ "warp",
+]
+
+[[package]]
 name = "h2"
 version = "0.2.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -555,21 +570,6 @@ checksum = "2684d4c2e97d99848d30b324b00c8fcc7e5c897b7cbb5819b09e7c90e8baf212"
 dependencies = [
  "mime 0.3.16",
  "unicase 2.6.0",
-]
-
-[[package]]
-name = "minutiae"
-version = "0.1.0"
-dependencies = [
- "clap",
- "log 0.4.8",
- "pretty_env_logger",
- "rust-embed",
- "serde",
- "serde_derive",
- "serde_json",
- "tokio",
- "warp",
 ]
 
 [[package]]
